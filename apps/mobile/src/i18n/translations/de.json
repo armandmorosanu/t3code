@@ -5722,5 +5722,9 @@
   "99451a5d2d40440f": "Zurückgezogen von {by}.",
   "3ee30a50b70fffab": "Zurückgezogen von {by}: {reason}",
   "201490988858b511": "zurückgezogen von {by}",
-  "46d614fa7b4bf1e5": "Workflow-Ausführungen"
+  "46d614fa7b4bf1e5": "Workflow-Ausführungen",
+  "78ceb92a5b33a779": "Befehl nicht ausgeführt",
+  "440210447ea2814b": "Du hast hier keine Berechtigung, Befehle auszuführen.",
+  "50769d067d003ec9": "Der Befehl konnte nicht ausgeführt werden.",
+  "bc84f52ae9af5493": "Sende zuerst eine Nachricht; Befehle laufen in einem bestehenden Thread."
 }

@@ -44,6 +44,12 @@ Enable automatic cleanup in **Settings → Worktrees → Cleanup** (off by defau
 - **Manual run**: Click **Delete now** to run rules immediately and inspect what was removed, kept, or orphaned (untracked folders are listed but never auto-deleted).
 - **Captures and logs**: Browser captures and rotated logs have separate machine-wide retention periods.
 
+## Slash commands
+
+A project can declare slash commands in the `commands` array of its `t3.json`. They appear in the
+composer's `/` menu for threads in the project and override same-named commands from the user's
+`commands.json`. See [Your own commands](./composer.md#your-own-commands) for the fields and behavior.
+
 ## Keep the default branch current
 
 Enable **Settings → Source control & issues → Automatically pull** to fast-forward clean default-branch checkouts from their configured upstream. Skips checkouts with local changes, untracked files, local commits, other branches, or no upstream.

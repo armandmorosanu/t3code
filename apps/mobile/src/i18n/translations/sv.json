@@ -5722,5 +5722,9 @@
   "99451a5d2d40440f": "Återkallad av {by}.",
   "3ee30a50b70fffab": "Återkallad av {by}: {reason}",
   "201490988858b511": "återkallad av {by}",
-  "46d614fa7b4bf1e5": "Arbetsflödeskörningar"
+  "46d614fa7b4bf1e5": "Arbetsflödeskörningar",
+  "78ceb92a5b33a779": "Kommandot kördes inte",
+  "440210447ea2814b": "Du har inte behörighet att köra kommandon här.",
+  "50769d067d003ec9": "Det gick inte att köra kommandot.",
+  "bc84f52ae9af5493": "Skicka ett meddelande först; kommandon körs i en befintlig tråd."
 }

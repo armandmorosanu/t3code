@@ -5724,5 +5724,9 @@
   "99451a5d2d40440f": "Withdrawn by {by}.",
   "3ee30a50b70fffab": "Withdrawn by {by}: {reason}",
   "201490988858b511": "withdrawn by {by}",
-  "46d614fa7b4bf1e5": "Workflow runs"
+  "46d614fa7b4bf1e5": "Workflow runs",
+  "78ceb92a5b33a779": "Command not run",
+  "440210447ea2814b": "You don't have permission to run commands here.",
+  "50769d067d003ec9": "Could not run the command.",
+  "bc84f52ae9af5493": "Send a message first; commands run in an existing thread."
 }

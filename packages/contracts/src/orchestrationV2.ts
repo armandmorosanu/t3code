@@ -96,6 +96,7 @@ import {
   ToolActivitySource,
 } from "./providerRuntime.ts";
 import { ThreadTokenUsageSnapshot } from "./providerRuntime.ts";
+import { UserCommandHtmlRender, UserCommandOutput } from "./userCommand.ts";
 
 export const OrchestrationV2Actor = Schema.Literals(["user", "agent", "system"]);
 export type OrchestrationV2Actor = typeof OrchestrationV2Actor.Type;
@@ -2056,6 +2057,16 @@ export const OrchestrationV2TurnItem = Schema.Union([
   }),
   Schema.Struct({
     ...OrchestrationV2TurnItemBaseFields,
+    type: Schema.Literal("user_command"),
+    command: Schema.String,
+    args: Schema.String,
+    format: UserCommandOutput,
+    markdown: Schema.optionalKey(Schema.String),
+    htmlRender: Schema.optionalKey(UserCommandHtmlRender),
+    error: Schema.optionalKey(Schema.String),
+  }),
+  Schema.Struct({
+    ...OrchestrationV2TurnItemBaseFields,
     type: Schema.Literal("error"),
     failure: OrchestrationV2ProviderFailure,
     retry: Schema.optional(OrchestrationV2ProviderRetry),
@@ -2951,6 +2962,16 @@ export const OrchestrationV2TurnItemJson = Schema.Union([
     message: Schema.String,
     level: Schema.optional(OrchestrationV2SystemNoticeLevel),
     mcpSignIn: Schema.optional(OrchestrationV2McpSignIn),
+  }),
+  Schema.Struct({
+    ...OrchestrationV2TurnItemJsonBaseFields,
+    type: Schema.Literal("user_command"),
+    command: Schema.String,
+    args: Schema.String,
+    format: UserCommandOutput,
+    markdown: Schema.optionalKey(Schema.String),
+    htmlRender: Schema.optionalKey(UserCommandHtmlRender),
+    error: Schema.optionalKey(Schema.String),
   }),
   Schema.Struct({
     ...OrchestrationV2TurnItemJsonBaseFields,

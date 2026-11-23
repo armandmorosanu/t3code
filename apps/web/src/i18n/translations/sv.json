@@ -3237,7 +3237,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "på datorn som öppnade den här sidan"]
+      "c": [
+        " ",
+        "på datorn som öppnade den här sidan"
+      ]
     }
   ],
   "b2d53b4d1d48fbef": [
@@ -3249,7 +3252,10 @@
     {
       "t": "span",
       "i": 2,
-      "c": [" ", "· den som kör den får den här åtkomsten"]
+      "c": [
+        " ",
+        "· den som kör den får den här åtkomsten"
+      ]
     }
   ],
   "c54cc9c75db9dc58": "Godkänn bara en inloggning som du själv precis har startat.",
@@ -13050,5 +13056,9 @@
   "95435f0b59cb2193": "Ljudförhandsvisning",
   "4a12506938295127": "Ange {field} först.",
   "5807c08e225c6b3d": "Ladda ned",
-  "0d50b5bfe7151ece": "Det gick inte att ladda ned filen"
+  "0d50b5bfe7151ece": "Det gick inte att ladda ned filen",
+  "78ceb92a5b33a779": "Kommandot kördes inte",
+  "440210447ea2814b": "Du har inte behörighet att köra kommandon här.",
+  "bc84f52ae9af5493": "Skicka ett meddelande först; kommandon körs i en befintlig tråd.",
+  "50769d067d003ec9": "Det gick inte att köra kommandot."
 }

@@ -402,6 +402,13 @@ import {
   ServerUpsertKeybindingResult,
 } from "./server.ts";
 import {
+  UserCommandError,
+  UserCommandsListInput,
+  UserCommandsListResult,
+  UserCommandsRunInput,
+  UserCommandsRunResult,
+} from "./userCommand.ts";
+import {
   HostResourcesSnapshot,
   ResourceTelemetryHistory,
   ResourceTelemetryHistoryInput,
@@ -590,6 +597,9 @@ export const WS_METHODS = {
   deviceAction: "device.action",
 
   serverProbe: "server.probe",
+  userCommandsList: "userCommands.list",
+  userCommandsRun: "userCommands.run",
+
   serverGetConfig: "server.getConfig",
   serverGetNpmRelease: "server.getNpmRelease",
   serverRefreshProviders: "server.refreshProviders",
@@ -774,6 +784,18 @@ const WsServerGetConfigRpc = Rpc.make(WS_METHODS.serverGetConfig, {
   payload: Schema.Struct({}),
   success: ServerConfig,
   error: Schema.Union([KeybindingsConfigError, ServerSettingsError, EnvironmentAuthorizationError]),
+});
+
+const WsUserCommandsListRpc = Rpc.make(WS_METHODS.userCommandsList, {
+  payload: UserCommandsListInput,
+  success: UserCommandsListResult,
+  error: Schema.Union([UserCommandError, EnvironmentAuthorizationError]),
+});
+
+const WsUserCommandsRunRpc = Rpc.make(WS_METHODS.userCommandsRun, {
+  payload: UserCommandsRunInput,
+  success: UserCommandsRunResult,
+  error: Schema.Union([UserCommandError, EnvironmentAuthorizationError]),
 });
 
 export const WsServerRefreshProvidersRpc = Rpc.make(WS_METHODS.serverRefreshProviders, {
@@ -2515,6 +2537,8 @@ export const WsRpcGroup = RpcGroup.make(
   WsServerProbeRpc,
   WsServerGetConfigRpc,
   WsServerRefreshProvidersRpc,
+  WsUserCommandsListRpc,
+  WsUserCommandsRunRpc,
   WsServerUpdateProviderRpc,
   WsProviderConsumeResetCreditRpc,
   WsProviderAuthStartRpc,
