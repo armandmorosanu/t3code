@@ -46,7 +46,10 @@ import {
   submitCodexFeedback,
   type CodexFeedbackSubmission,
 } from "@t3tools/client-runtime/state/threads";
-import { resolveThreadWorkingStartedAt } from "@t3tools/client-runtime/state/models";
+import {
+  promptCacheColdAtMs,
+  resolveThreadWorkingStartedAt,
+} from "@t3tools/client-runtime/state/models";
 import { deriveThreadTitleSeed } from "@t3tools/client-runtime/operations";
 import { upgradeLegacyContextMessage } from "@t3tools/shared/composerContextLegacy";
 import { restoreAttachmentOnlyBootstrapPrompt } from "@t3tools/shared/composerContextReferences";
@@ -57,7 +60,7 @@ import {
   uploadedComposerContext,
 } from "../lib/composerContext";
 import { uuidv4 } from "../lib/uuid";
-import { useNowMinuteMs } from "../lib/clock";
+import { useDeadlinePassed, useNowMinuteMs } from "../lib/clock";
 
 import { makeQueuedMessageMetadata } from "../lib/commandMetadata";
 import {
@@ -484,6 +487,12 @@ export function useThreadComposerState(input: {
     selectedDraft.freshContext === true
       ? null
       : resumeCompactionTokens(modelSelection, "", new Date(nowMinuteMs).toISOString());
+  // Neither a handoff destination nor a fresh session resumes the cold conversation.
+  const promptCacheCold = useDeadlinePassed(
+    selectedThread != null && pendingHandoff === null && selectedDraft.freshContext !== true
+      ? promptCacheColdAtMs(selectedThread)
+      : null,
+  );
   const fullHistoryThreadKeys = useAtomValue(fullHistoryThreadKeysAtom);
   const keepFullHistory =
     selectedThreadKey !== null && fullHistoryThreadKeys[selectedThreadKey] === true;
@@ -626,6 +635,7 @@ export function useThreadComposerState(input: {
       hasAttachmentsOrContext: boolean,
     ) => Promise<boolean | "responded">,
     onWillEnqueue?: () => void,
+    handoffContext?: boolean,
   ) => {
     if (
       selectedThreadShell &&
@@ -919,6 +929,7 @@ export function useThreadComposerState(input: {
           ? {}
           : { dispatchMode: followUpDispatchMode }),
       ...(freshContext ? { freshContext: true } : {}),
+      ...(handoffContext === true && !freshContext ? { handoffContext: true } : {}),
       createdAt: metadata.createdAt,
     });
     clearComposerDraftContent(threadKey, { deferAttachmentCleanup: true });
@@ -1063,6 +1074,9 @@ export function useThreadComposerState(input: {
     ),
     providerSubagentStatus,
     isCompacting,
+    promptCacheCold,
+    coldCacheHandoffAvailable:
+      selectedEnvironmentRuntime?.serverConfig?.environment.capabilities.handoffContext === true,
     compactBeforeSend:
       compactTokens === null || selectedThreadKey === null
         ? null

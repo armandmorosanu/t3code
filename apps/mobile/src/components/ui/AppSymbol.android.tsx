@@ -131,6 +131,7 @@ import IconTypography from "@tabler/icons-react-native/IconTypography";
 import IconLetterCase from "@tabler/icons-react-native/IconLetterCase";
 import IconDownload from "@tabler/icons-react-native/IconDownload";
 import IconSitemap from "@tabler/icons-react-native/IconSitemap";
+import IconSnowflake from "@tabler/icons-react-native/IconSnowflake";
 import IconUpload from "@tabler/icons-react-native/IconUpload";
 import IconUserCircle from "@tabler/icons-react-native/IconUserCircle";
 import IconUserCheck from "@tabler/icons-react-native/IconUserCheck";
@@ -261,6 +262,7 @@ const ANDROID_ICON_BY_SF_SYMBOL = {
   "qrcode.viewfinder": IconQrcode,
   "point.3.connected.trianglepath.dotted": IconNetwork,
   flowchart: IconSitemap,
+  snowflake: IconSnowflake,
   "point.topleft.down.curvedto.point.bottomright.up": IconGitMerge,
   safari: IconExternalLink,
   "server.rack": IconServer,

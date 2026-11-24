@@ -8663,6 +8663,18 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
       isProviderSwitch &&
       activeProviderThread.nativeThreadRef !== null &&
       providerSwitchPlan?.transition.type === "restart_and_resume";
+    // Resuming after the prompt cache expired re-reads the whole history uncached; a new native
+    // conversation primed with the thread summary costs only the summary. Only an idle thread's
+    // cache can be cold, so a send that queues or steers never asks for this.
+    const handoffToNewConversation =
+      command.handoffContext === true &&
+      !freshContext &&
+      !isProviderSwitch &&
+      pendingForkTransfer === undefined &&
+      pendingMergeBackTransfer === undefined &&
+      activeProviderThread !== undefined &&
+      activeProviderThread.nativeThreadRef !== null;
+    const releasesActiveSession = freshContext || handoffToNewConversation;
     const releasableSessions = uniqueSessions([
       ...projection.providerSessions.filter(
         (session) =>
@@ -8670,7 +8682,9 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
           session.status !== "stopped" &&
           session.status !== "error",
       ),
-      ...(freshContext ? sessionsReleasedByFreshContext(projection, activeProviderThread) : []),
+      ...(releasesActiveSession
+        ? sessionsReleasedByFreshContext(projection, activeProviderThread)
+        : []),
     ]);
     const sessionsToDetach: Array<OrchestrationV2ProviderSession> = [];
     for (const detaching of releasableSessions) {
@@ -8680,7 +8694,7 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
         return yield* new OrchestratorDispatchError({
           commandId: command.commandId,
           commandType: command.type,
-          cause: freshContext
+          cause: releasesActiveSession
             ? "The current session is still running background agents or commands, and a fresh session would end them. Wait for them to finish, or press Stop, then send the message again."
             : "The previous provider is still running background agents or commands, and switching would end them. Wait for them to finish, or press Stop, then send the message again.",
         });
@@ -8691,7 +8705,8 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
     if (
       pendingForkTransfer === undefined &&
       pendingMergeBackTransfer === undefined &&
-      (!isProviderSwitch || freshContext)
+      (!isProviderSwitch || freshContext) &&
+      !handoffToNewConversation
     ) {
       const reusableProviderThread = freshContext ? undefined : activeProviderThread;
       const adapter = yield* providerAdapters.get(modelSelection.instanceId).pipe(
@@ -9148,8 +9163,9 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
           }),
       ),
     );
-    const targetProviderThread =
-      isProviderSwitch && !canResumeAcrossInstances
+    const targetProviderThread = handoffToNewConversation
+      ? undefined
+      : isProviderSwitch && !canResumeAcrossInstances
         ? rootProviderThreadsForProvider(projection, modelSelection.instanceId)[0]
         : activeProviderThread;
     const providerSessionId =
@@ -9358,7 +9374,9 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
         ? undefined
         : lastDeliveredRunForProviderThread(projection, targetProviderThread.id);
     const providerSwitchCoveredRuns =
-      !isProviderSwitch || canResumeAcrossInstances || latestHandoffRun === undefined
+      (!isProviderSwitch && !handoffToNewConversation) ||
+      canResumeAcrossInstances ||
+      latestHandoffRun === undefined
         ? []
         : projection.runs.filter(
             (run) =>
@@ -10085,7 +10103,9 @@ const makeOrchestrator = Effect.fn("orchestrationV2.Orchestrator.layer")(functio
 
     const detachDetail = canResumeAcrossInstances
       ? "Provider account changed; continuing the native thread."
-      : "Provider or model selection changed.";
+      : handoffToNewConversation
+        ? "Handed the thread to a new conversation."
+        : "Provider or model selection changed.";
     for (const session of sessionsToDetach) {
       yield* emitEvent({
         type: "provider-session.detached",

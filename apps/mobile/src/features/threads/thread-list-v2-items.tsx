@@ -23,6 +23,7 @@ import type {
 import type { EnvironmentThreadSearchMatch } from "@t3tools/client-runtime/state/thread-search";
 import {
   formatWorkingDurationLabel,
+  promptCacheColdAtMs,
   resolveThreadWorkingStartedAt,
 } from "@t3tools/client-runtime/state/models";
 import {
@@ -52,7 +53,7 @@ import {
   ProviderInstanceIcon,
   providerInstanceNameLabel,
 } from "../../components/ProviderIcon";
-import { useNowAfter } from "../../lib/clock";
+import { useDeadlinePassed, useNowAfter } from "../../lib/clock";
 import { cn } from "../../lib/cn";
 import { copyTextWithHaptic } from "../../lib/copyTextWithHaptic";
 import { copyThreadReference } from "../../lib/copyThreadReference";
@@ -866,6 +867,7 @@ export const ThreadListV2Row = memo(function ThreadListV2Row(props: {
 
   const rawStatus = resolveThreadListV2Status(thread);
   const status = resolveThreadListV2RowStatus(thread);
+  const promptCacheCold = useDeadlinePassed(promptCacheColdAtMs(thread));
   const isUnread = status === "ready" && threadHasUnseenCompletion(thread);
   const workingLabel = STATUS_LABEL_BY_STATUS[status];
   const showsWoke = status === "ready" && props.wokeAt !== null;
@@ -1414,6 +1416,14 @@ export const ThreadListV2Row = memo(function ThreadListV2Row(props: {
         </Text>
         <View className="flex-row items-center gap-1.5" style={{ minHeight: titleLineHeight }}>
           {props.hasQueuedMessages ? <QueuedMessageIcon selected={selected} /> : null}
+          {promptCacheCold ? (
+            <SymbolView
+              name="snowflake"
+              size={11}
+              tintColorClassName={rowAppearance.mutedIconTintClassName}
+              type="monochrome"
+            />
+          ) : null}
           {pinnedRow ? (
             <SymbolView
               name="pin"
@@ -1745,6 +1755,14 @@ export const ThreadListV2Row = memo(function ThreadListV2Row(props: {
             ) : null}
           </View>
           {props.hasQueuedMessages ? <QueuedMessageIcon selected={selected} /> : null}
+          {promptCacheCold ? (
+            <SymbolView
+              name="snowflake"
+              size={11}
+              tintColorClassName={rowAppearance.mutedIconTintClassName}
+              type="monochrome"
+            />
+          ) : null}
           <Text
             className={cn(
               "font-mono text-sm tabular-nums",
