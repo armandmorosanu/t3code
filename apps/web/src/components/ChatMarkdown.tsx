@@ -89,7 +89,10 @@ import React, {
   type ReactNode,
 } from "react";
 import { parseAssistantCitationHref } from "@t3tools/shared/assistantCitations";
-import { parseComposerContextHref } from "@t3tools/shared/composerContextReferences";
+import {
+  parseComposerContextHref,
+  type ComposerGitRef,
+} from "@t3tools/shared/composerContextReferences";
 import { parseThreadLinkHref } from "@t3tools/shared/threadLinks";
 import { AssistantCitationEmbed } from "./chat/AssistantCitationChip";
 import { MarkdownThreadLink } from "./chat/MarkdownThreadLink";
@@ -277,6 +280,7 @@ export interface ChatMarkdownContextReference {
   kind: string;
   contextId: string;
   label: string;
+  gitRef?: ComposerGitRef;
   /** Whether it starts or ends its block, for a reference that renders as a block. */
   leading?: boolean;
   trailing?: boolean;

@@ -2,6 +2,11 @@
 
 T3 Code integrates with GitHub, GitLab, Forgejo, Gitea, Bitbucket, Azure DevOps, GitCafe, Cursor Origin, Linear, and Jira Cloud to clone/publish repos, review and merge pull requests, manage issues, and watch CI.
 
+Type `@` followed by a branch name in the composer to reference a local or remote branch.
+Choose **Worktree** for a branch when you want the agent to inspect the checkout, including
+uncommitted changes. A branch mention includes its commit when available. Click the chip
+in the composer or a sent message to see what it refers to.
+
 ## Connect an account
 
 Install Git and authenticate on the machine running your T3 Code server (for remote environments, do this on the remote machine), then click **Rescan** in **Settings → Source control & issues**.
