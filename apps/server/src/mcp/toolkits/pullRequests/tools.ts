@@ -700,7 +700,8 @@ const CreatePullRequestTool = Tool.make("pull_request_create", {
   .annotate(Tool.Destructive, false)
   .annotate(Tool.Idempotent, true)
   .annotate(Tool.OpenWorld, true)
-  .annotate(McpSchema.EnabledWhen, McpInvocationContext.hiddenWithoutForge);
+  // Disabled on this fork so agents cannot open PRs without explicit user direction.
+  .annotate(McpSchema.EnabledWhen, () => false);
 
 const UpdateNames = Schema.Array(TrimmedNonEmptyString).check(
   Schema.isMinLength(1),
